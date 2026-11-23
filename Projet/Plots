@@ -2,6 +2,9 @@
 import matplotlib as plt
 import numpy as np
 
+from .Analysis import moves
+from ###### import FIG_DIR, MIN_CELL_N, TICKERS
+
 
 COLORS = {"drop": "#c0392b", "rise": "#2471a3"}
 LABELS = {"drop": "Forte baisse", "rise": "Forte hausse"}
