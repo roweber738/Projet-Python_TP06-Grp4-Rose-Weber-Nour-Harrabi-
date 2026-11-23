@@ -1,0 +1,51 @@
+#Importation des librairies
+import matplotlib as plt
+import numpy as np
+
+
+
+
+def _save(fig, name):
+    if name:
+        FIG_DIR.mkdir(parents=True, exist_ok=True)
+        fig.savefig(FIG_DIR / f"{name}.png", dpi=150, bbox_inches="tight")
+
+
+def plot_group_bar(summary, save_as = None):
+    s = summary.reindex(list(TICKERS))
+    x, w = np.arange(len(s)), 0,38
+    fig, ax = plt.subplots(figsize=(9,5))
+    ax.bar(x - w / 2, s["median_relvol_drop"], w, color=COLORS["drop"], label=LABELS["drop"])
+    ax.bar(x + w / 2, s["median_relvol_rise"], w, color=COLORS["rise"], label=LABELS["rise"])
+    ax.axhline(1, color="grey", ls="--", lw=1, label="Volume habituel (= 1)")
+    ax.set_xticks(x, NAMES)
+    ax.set_ylabel("Médiane du volume relatif")
+    ax.set_title("Volume relatif les jours de forte baisse vs forte hausse")
+    ax.legend()
+    _save(fig, save_as)
+    return fig   
+
+
+####Reste :
+
+#Chart type: Boxplots.
+#X-axis: large drops versus large rises.
+#Y-axis: relative volume.
+#Use separate panels or colors for each stock.
+#What it answers: Is the difference typical of many days, or is it driven by a few exceptional observations?
+#Over time: Does the pattern change from year to year?
+
+#Chart type: Line chart.
+#X-axis: year, from 2021 to 2025.
+#Y-axis: difference between median relative volume on large-drop and large-rise days.
+#One line per stock.
+#A positive value indicates higher median relative volume on large-drop days; a negative value indicates the opposite.
+#What it answers: Is the pattern persistent, or does it vary across years?
+#Do some companies behave differently from others?
+
+#Chart type: Heatmap.
+#X-axis: magnitude of the price movement (e.g., 1–2%, 2–3%, above 3%).
+#Y-axis: the five stocks — Apple, JPMorgan, Google, Microsoft and TotalEnergies.
+#Cell color and value: difference between median relative volume on large-drop days and large-rise days within each movement-size group.
+#A positive value indicates higher median relative volume on large-drop days; a negative value indicates the opposite.
+#What it answers: Does the relationship between price-movement direction and trading activity differ across companies? Does the difference become stronger for larger price movements?
