@@ -3,6 +3,9 @@ import matplotlib as plt
 import numpy as np
 
 
+COLORS = {"drop": "#c0392b", "rise": "#2471a3"}
+LABELS = {"drop": "Forte baisse", "rise": "Forte hausse"}
+NAMES = list(TICKERS.values())
 
 
 def _save(fig, name):
@@ -24,6 +27,15 @@ def plot_group_bar(summary, save_as = None):
     ax.legend()
     _save(fig, save_as)
     return fig   
+
+
+
+def plot_boxplots(df, save_as=None):
+    m = 
+
+
+
+
 
 
 ####Reste :
