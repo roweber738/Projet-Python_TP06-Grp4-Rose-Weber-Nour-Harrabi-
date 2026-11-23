@@ -31,33 +31,54 @@ def plot_group_bar(summary, save_as = None):
 
 
 def plot_boxplots(df, save_as=None):
-    m = 
+    m = moves(df)
+    fig, axes = plt.subplots(1, len(TICKERS), figsize=(16, 5), sharey=True)
+    for ax, (t, name) in zip(axes, TICKERS.items()):
+        sns.boxplot(data=m[m["ticker"] == t], x="move_type", y="rel_volume",
+                    order=["drop", "rise"], hue="move_type", palette=COLORS,
+                    legend=False, ax=ax, flierprops={"markersize": 2, "alpha": 0.4})
+        ax.set_yscale("log")
+        ax.axhline(1, color="grey", ls="--", lw=1)
+        ax.set_xticks([0, 1], ["Baisse", "Hausse"])
+        ax.set_xlabel("")
+        ax.set_ylabel("Volume relatif (échelle log)" if ax is axes[0] else "")
+        ax.set_title(name)
+    fig.suptitle("Distribution du volume relatif selon le sens du mouvement")
+    fig.tight_layout()
+    _save(fig, save_as)
+    return fig
 
 
+def plot_yearly_lines(yearly, save_as=None):
+    """Écart de médiane de volume relatif (baisse - hausse) par année."""
+    fig, ax = plt.subplots(figsize=(9, 5))
+    for t, name in TICKERS.items():
+        ax.plot(yearly.index, yearly[t], marker="o", label=name)
+    ax.axhline(0, color="black", lw=1)
+    ax.set_xticks(yearly.index)
+    ax.set_xlabel("Année")
+    ax.set_ylabel("Médiane vol. relatif : baisses - hausses")
+    ax.set_title("Évolution de l'écart au fil des années")
+    ax.legend()
+    _save(fig, save_as)
+    return fig
 
 
+def plot_heatmap(diff, nmin, save_as=None):
+    """Écart baisses - hausses par action et ampleur du mouvement (n = effectif minimal)."""
+    labels = diff.copy().astype(object)
+    for i in diff.index:
+        for j in diff.columns:
+            flag = "*" if nmin.loc[i, j] < MIN_CELL_N else ""
+            labels.loc[i, j] = f"{diff.loc[i, j]:+.2f}\n(n={int(nmin.loc[i, j])}){flag}"
+    fig, ax = plt.subplots(figsize=(8, 5))
+    sns.heatmap(diff.astype(float), annot=labels.values, fmt="", cmap="RdBu_r", center=0,
+                cbar_kws={"label": "Médiane vol. relatif : baisses - hausses"}, ax=ax)
+    ax.set_yticklabels(NAMES, rotation=0)
+    ax.set_xlabel("Ampleur du mouvement de prix")
+    ax.set_ylabel("")
+    ax.set_title(f"Écart selon l'ampleur (* : n < {MIN_CELL_N} dans un des deux groupes)")
+    _save(fig, save_as)
+    return fig
 
 
-####Reste :
-
-#Chart type: Boxplots.
-#X-axis: large drops versus large rises.
-#Y-axis: relative volume.
-#Use separate panels or colors for each stock.
-#What it answers: Is the difference typical of many days, or is it driven by a few exceptional observations?
-#Over time: Does the pattern change from year to year?
-
-#Chart type: Line chart.
-#X-axis: year, from 2021 to 2025.
-#Y-axis: difference between median relative volume on large-drop and large-rise days.
-#One line per stock.
-#A positive value indicates higher median relative volume on large-drop days; a negative value indicates the opposite.
-#What it answers: Is the pattern persistent, or does it vary across years?
-#Do some companies behave differently from others?
-
-#Chart type: Heatmap.
-#X-axis: magnitude of the price movement (e.g., 1–2%, 2–3%, above 3%).
-#Y-axis: the five stocks — Apple, JPMorgan, Google, Microsoft and TotalEnergies.
-#Cell color and value: difference between median relative volume on large-drop days and large-rise days within each movement-size group.
-#A positive value indicates higher median relative volume on large-drop days; a negative value indicates the opposite.
-#What it answers: Does the relationship between price-movement direction and trading activity differ across companies? Does the difference become stronger for larger price movements?
