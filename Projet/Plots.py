@@ -2,13 +2,13 @@
 import matplotlib as plt
 import numpy as np
 
-from .Analysis import moves
-from ###### import FIG_DIR, MIN_CELL_N, TICKERS
+from Analysis import moves
+from collect import FIG_DIR, MIN_CELL_N, TICKERS
 
 
 COLORS = {"drop": "#c0392b", "rise": "#2471a3"}
 LABELS = {"drop": "Forte baisse", "rise": "Forte hausse"}
-NAMES = list(TICKERS.values())
+NAMES = TICKERS
 
 
 def _save(fig, name):
@@ -83,5 +83,3 @@ def plot_heatmap(diff, nmin, save_as=None):
     ax.set_title(f"Écart selon l'ampleur (* : n < {MIN_CELL_N} dans un des deux groupes)")
     _save(fig, save_as)
     return fig
-
-

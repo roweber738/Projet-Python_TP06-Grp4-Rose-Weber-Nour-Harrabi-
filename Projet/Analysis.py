@@ -1,7 +1,7 @@
 import pandas as pd
 from scipy.stats import mannwhitneyu
 
-from ###### import TICKERS
+from collect import TICKERS
 
 
 def moves(df: pd.DataFrame) -> pd.DataFrame:
