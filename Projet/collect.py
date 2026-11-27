@@ -14,7 +14,8 @@ MAX_ROWS = 5000            # the API returns at most 5000 rows per request
 PAUSE_SECONDS = 8          # free plan limit: 8 requests per minute
 API_URL = "https://api.twelvedata.com/time_series"
 RAW_DIR = Path("data/raw")
-
+FIG_DIR =  Path("figures")
+MIN_CELL_N = 10  
 
 def download(ticker, api_key):
     """Return the daily prices of one ticker as a table."""
