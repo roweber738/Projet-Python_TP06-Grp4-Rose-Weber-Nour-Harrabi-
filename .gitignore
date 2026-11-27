@@ -160,6 +160,7 @@ env.bak/
 venv.bak/
 Project/data/
 data/processed/
+data/raw
 
 
 # Spyder project settings
